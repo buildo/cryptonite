@@ -15,12 +15,12 @@ object Boot extends App with WiroCodecs with RouterDerivationModule {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  val helloworldRouter = deriveRouter[CryptoniteApi](new CryptoniteApiImpl)
+  val walletRouter = deriveRouter[WalletController](new WalletControllerImpl)
 
   val conf = ConfigFactory.load()
 
   val rpcServer = new HttpRPCServer(
     config = Config(conf.getString("cryptonite.host"), conf.getInt("cryptonite.port")),
-    routers = List(helloworldRouter)
+    routers = List(walletRouter)
   )
 }
