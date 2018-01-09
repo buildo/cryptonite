@@ -8,6 +8,7 @@ import wiro.server.akkaHttp._
 import wiro.server.akkaHttp.FailSupport._
 
 import com.typesafe.config.ConfigFactory
+import io.circe.generic.auto._
 
 object Boot extends App with WiroCodecs with RouterDerivationModule {
   implicit val system = ActorSystem("cryptonite")
