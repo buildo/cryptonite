@@ -1,4 +1,4 @@
-package apiseed
+package cryptonite
 
 import scala.concurrent.{Future, ExecutionContext}
 import wiro.annotation._

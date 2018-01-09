@@ -1,4 +1,4 @@
-package apiseed
+package cryptonite
 
 import wiro.server.akkaHttp._
 
