@@ -1,0 +1,8 @@
+{
+  "locales": [
+    "en"
+  ],
+  "messages": {
+    "Hello.hello": "Hello!"
+  }
+}
