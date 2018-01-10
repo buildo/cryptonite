@@ -1,7 +1,5 @@
 package cryptonite
 
-import cryptonite.errors.ApiError
-
 import wiro.server.akkaHttp._
 import wiro.server.akkaHttp.FailSupport._
 
@@ -11,6 +9,8 @@ import io.circe._
 import io.circe.syntax._
 import io.circe.generic.auto._
 import io.buildo.enumero.circe._
+
+import cryptonite.errors.ApiError
 
 trait WiroCodecs {
   implicit def apiErrorToResponse: ToHttpResponse[ApiError] = error =>

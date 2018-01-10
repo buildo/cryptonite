@@ -1,8 +1,10 @@
 package cryptonite
 
 import scala.concurrent.Future
+
 import org.scalatest._
 import org.scalatest.Matchers._
+
 import cryptonite.errors.ApiError
 import cryptonite.model.Amount
 

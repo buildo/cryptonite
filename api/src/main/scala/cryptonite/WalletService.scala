@@ -1,6 +1,7 @@
 package cryptonite
 
 import scala.concurrent.{Future, ExecutionContext}
+
 import cryptonite.model.Amount
 import cryptonite.errors.ApiError
 

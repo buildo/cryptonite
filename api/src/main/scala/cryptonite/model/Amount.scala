@@ -1,3 +1,6 @@
 package cryptonite.model
 
-case class Amount (value: Float, currency: Currency)
+case class Amount (
+  value: Float,
+  currency: Currency
+)

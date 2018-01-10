@@ -2,6 +2,6 @@ package cryptonite.errors
 
 import io.buildo.enumero.annotations.enum
 
-@enum trait ApiError{
+@enum trait ApiError {
   object GenericError
 }
