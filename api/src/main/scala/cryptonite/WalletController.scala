@@ -12,10 +12,8 @@ trait WalletController {
   def read(): Future[Either[ApiError, List[Amount]]]
 }
 
-class WalletControllerImpl(implicit ec: ExecutionContext) extends WalletController {
+class WalletControllerImpl(service: WalletService)(implicit ec: ExecutionContext) extends WalletController {
 
-  override def read(): Future[Either[ApiError, List[Amount]]] = Future {
-    Left(ApiError.GenericError)
-  }
+  override def read(): Future[Either[ApiError, List[Amount]]] = service.read()
 }
 

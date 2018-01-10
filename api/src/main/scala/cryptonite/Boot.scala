@@ -15,7 +15,9 @@ object Boot extends App with WiroCodecs with RouterDerivationModule {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  val walletRouter = deriveRouter[WalletController](new WalletControllerImpl)
+  val walletRepo = new WalletRepository()
+  val walletService = new WalletService(walletRepo)
+  val walletRouter = deriveRouter[WalletController](new WalletControllerImpl(walletService))
 
   val conf = ConfigFactory.load()
 
