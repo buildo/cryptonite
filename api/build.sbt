@@ -12,7 +12,7 @@ lazy val enumero = "io.buildo" %% "enumero" % enumeroVersion
 lazy val enumeroCirce = "io.buildo" %% "enumero-circe-support" % enumeroVersion
 lazy val root = project.in(file("."))
   .settings(
-    name := "apiseed",
+    name := "cryptonite",
     scalaVersion := "2.12.4",
     resolvers += Resolver.bintrayRepo("buildo", "maven"),
     libraryDependencies ++= Seq(

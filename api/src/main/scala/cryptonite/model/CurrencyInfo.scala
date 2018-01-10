@@ -1,3 +1,6 @@
 package cryptonite.model
 
-case class CurrencyInfo (code: String, isCrypto: Boolean)
+case class CurrencyInfo (
+  code: String,
+  isCrypto: Boolean
+)
