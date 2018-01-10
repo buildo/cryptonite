@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IntlProvider } from 'Basic';
-import Hello from 'Hello';
+import Products from 'Products';
 
 type Props = {
   messages: any,
@@ -14,7 +14,7 @@ export default class App extends React.Component<Props> {
     return (
       <IntlProvider {...this.props}>
         <div className='layout'>
-          <Hello />
+          <Products />
         </div>
       </IntlProvider>
     );
