@@ -1,0 +1,4 @@
+-Xms2g
+-Xmx4g
+-Xss2m
+-XX:MetaspaceSize=512m

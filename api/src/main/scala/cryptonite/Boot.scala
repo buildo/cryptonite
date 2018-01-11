@@ -19,10 +19,12 @@ object Boot extends App with WiroCodecs with RouterDerivationModule {
   val walletService = new WalletService(walletRepo)
   val walletRouter = deriveRouter[WalletController](new WalletControllerImpl(walletService))
 
+  val productsRouter = deriveRouter[ProductsController](new ProductsControllerImpl)
+
   val conf = ConfigFactory.load()
 
   val rpcServer = new HttpRPCServer(
     config = Config(conf.getString("cryptonite.host"), conf.getInt("cryptonite.port")),
-    routers = List(walletRouter)
+    routers = List(walletRouter,productsRouter)
   )
 }

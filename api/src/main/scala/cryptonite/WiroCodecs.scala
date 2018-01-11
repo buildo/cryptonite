@@ -14,7 +14,7 @@ import cryptonite.errors.ApiError
 
 trait WiroCodecs {
   implicit def apiErrorToResponse: ToHttpResponse[ApiError] = error =>
-    error match { 
+    error match {
       case ApiError.GenericError => HttpResponse(
         status = StatusCodes.InternalServerError,
         entity = error
