@@ -1,5 +1,6 @@
 package cryptonite.model
 
+import io.buildo.enumero.CaseEnumSerialization
 import io.buildo.enumero.annotations.indexedEnum
 
 @indexedEnum trait Currency {
@@ -27,4 +28,10 @@ import io.buildo.enumero.annotations.indexedEnum
   object Euro { CurrencyInfo ("EUR", false) }
   object Dollar { CurrencyInfo ("USD", false) }
   object Pound { CurrencyInfo ("GBP", false) }
+}
+
+object Currencies {
+  def currencyFromString(string: String): Option[Currency] = {
+    CaseEnumSerialization[Currency].values.find(_.index.code == string)
+  }
 }

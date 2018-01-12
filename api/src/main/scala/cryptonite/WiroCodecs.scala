@@ -1,7 +1,6 @@
 package cryptonite
 
 import wiro.server.akkaHttp._
-import wiro.server.akkaHttp.FailSupport._
 
 import akka.http.scaladsl.model._
 
@@ -16,6 +15,10 @@ trait WiroCodecs {
   implicit def apiErrorToResponse: ToHttpResponse[ApiError] = error =>
     error match {
       case ApiError.GenericError => HttpResponse(
+        status = StatusCodes.InternalServerError,
+        entity = error
+      )
+      case ApiError.CurrencyNotFoundError => HttpResponse(
         status = StatusCodes.InternalServerError,
         entity = error
       )
