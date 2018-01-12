@@ -25,7 +25,7 @@ class GDAXGateway() {
   def read(): Future[Either[ApiError, List[Ticker]]] = {
     (for {
       products <- EitherT(products())
-      supportedProducts <- EitherT.pure[Future, String, List[SupportedProduct]](products.map(supportedProduct).flatten)
+      supportedProducts <- EitherT.pure[Future, String, List[SupportedProduct]](products.flatMap(supportedProduct))
       gdaxTickers <- supportedProducts.traverse(x => EitherT(ticker(x.id)))
     } yield {
       supportedProducts.zip(gdaxTickers).map{case (p,t) => convertTicker(p,t)}
