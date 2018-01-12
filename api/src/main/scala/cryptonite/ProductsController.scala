@@ -1,6 +1,6 @@
 package cryptonite
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.Future
 import wiro.annotation._
 
 import cryptonite.model._
@@ -13,7 +13,7 @@ trait ProductsController {
   def read(): Future[Either[ApiError, List[Book]]]
 }
 
-class ProductsControllerImpl(service: ProductsService)(implicit ec: ExecutionContext) extends ProductsController {
+class ProductsControllerImpl(service: ProductsService) extends ProductsController {
 
   override def read(): Future[Either[ApiError, List[Book]]] = {
     service.read()

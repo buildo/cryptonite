@@ -8,7 +8,6 @@ import com.softwaremill.sttp.circe._
 import com.softwaremill.sttp.akkahttp._
 import io.circe.generic.auto._
 import cats.syntax.traverse._
-import cats.syntax.either._
 import cats.instances.future._
 import cats.instances.list._
 import cats.data.EitherT

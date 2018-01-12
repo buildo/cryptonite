@@ -14,7 +14,7 @@ class PortfolioService(repository: PortfolioRepository)(implicit ec: ExecutionCo
   def get(code: String): Future[Either[ApiError, Amount]] = Future {
     repository.get(code) match {
       case Some(amount) => Right(amount)
-      case None => Left(ApiError.GenericError)
+      case None => Left(ApiError.CurrencyNotFoundError)
     }
   }
 }
