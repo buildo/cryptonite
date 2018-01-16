@@ -1,6 +1,6 @@
 import container from 'container';
 import Products from './Products';
-import { Book } from '../../metarpheus/model-ts';
+import { Book } from 'model';
 import { TransitionFunction } from 'state';
 
 type MapProps = {
