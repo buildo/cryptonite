@@ -8,10 +8,12 @@
     "build": "UV_THREADPOOL_SIZE=20 scriptoni web-build-ts -c ./config",
     "lint": "scriptoni lint",
     "lint-fix": "scriptoni lint --fix",
-    "lint-style": "scriptoni lint-style"
+    "lint-style": "scriptoni lint-style",
+    "metarpheus": "scriptoni metarpheus-ts"
   },
   "dependencies": {
     "avenger": "^1.3.1",
+    "axios": "^0.17.1",
     "buildo-normalize-css": "^3.0.2",
     "buildo-react-components": "^0.27.1",
     "buildo-react-container": "^0.11.0",
@@ -33,6 +35,6 @@
   "devDependencies": {
     "@types/node": "^8.0.24",
     "@types/react": "15.6.1",
-    "scriptoni": "0.7.2"
+    "scriptoni": "0.7.9"
   }
 }

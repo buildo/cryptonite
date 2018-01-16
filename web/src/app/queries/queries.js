@@ -1,12 +1,12 @@
 import { Query } from 'avenger/lib/graph';
 import { Expire } from 'avenger/lib/cache/strategies';
 import t from 'tcomb';
-import * as API from 'API';
+import API from 'API';
 
-export const user = Query({
-  id: 'user',
-  cacheStrategy: new Expire(2000),
-  returnType: t.String,
-  fetch: API.getUser
+export const getProducts = Query({
+  id: 'getProducts',
+  cacheStrategy: new Expire(15000),
+  returnType: t.Any,
+  fetch: API.productsController_read
 });
 
