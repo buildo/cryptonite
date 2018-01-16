@@ -8,15 +8,16 @@ import cats.instances.list._
 import cats.data.EitherT
 
 import cryptonite.model._
-import cryptonite.gdax.model.Ticker
+import cryptonite.model.exchange.Ticker
 import cryptonite.errors.ApiError
 import cryptonite.gdax.GDAXGateway
+import cryptonite.kraken.KrakenGateway
 
-class ProductsService(gateway: GDAXGateway, portfolioService: PortfolioService)(implicit ec: ExecutionContext) {
+class ProductsService(gdaxGateway: GDAXGateway, krakenGateway: KrakenGateway, portfolioService: PortfolioService)(implicit ec: ExecutionContext) {
 
   def read(): Future[Either[ApiError, List[Book]]] = {
     (for {
-      tickers <- EitherT(gateway.read())
+      tickers <- EitherT(gdaxGateway.read())
       amounts <- tickers.traverse(x => EitherT(portfolioService.get(x.product.base.index.code)))
     } yield {
       tickers.zip(amounts).map{case (t,a) => createBook(t,a)}

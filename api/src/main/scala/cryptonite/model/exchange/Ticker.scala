@@ -1,4 +1,4 @@
-package cryptonite.gdax.model
+package cryptonite.model.exchange
 
 import cryptonite.model.{Amount, Product}
 
