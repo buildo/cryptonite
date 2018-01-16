@@ -1,15 +1,16 @@
 package cryptonite.kraken
 
-import java.util.concurrent.Executors
 import scala.concurrent.{Future, ExecutionContext}
 
 import com.softwaremill.sttp._
 import com.softwaremill.sttp.circe._
 import com.softwaremill.sttp.akkahttp._
+import io.circe._
 import io.circe.generic.auto._
-import cats.syntax.traverse._
+import io.circe.generic.semiauto.deriveDecoder
+import io.buildo.enumero.circe._
+import io.circe.syntax._
 import cats.instances.future._
-import cats.instances.list._
 import cats.data.EitherT
 
 import cryptonite.model._
@@ -61,17 +62,36 @@ class KrakenGateway(implicit ec: ExecutionContext) {
   private def tickers(products: List[SupportedProduct]): Future[Either[String, List[KrakenTicker]]] = {
     val productIds = products.map(_.id).mkString(",")
     val request = sttp.get(uri"https://api.kraken.com/0/public/Ticker?pair=$productIds")
-    val response = request.response(asJson[List[KrakenTicker]]).send()
-    response.map(x => collapseEithers(x.body))
+    val response = request.response(asJson[KrakenResult[KrakenTicker]]).send()
+    response.map(x => collapseEithers(x.body).map(_.result))
   }
 
   private def products(): Future[Either[String, List[KrakenProduct]]] = {
     val request = sttp.get(uri"https://api.kraken.com/0/public/AssetPairs")
-    val response = request.response(asJson[List[KrakenProduct]]).send()
-    response.map(x => collapseEithers(x.body))
+    val response = request.response(asJson[KrakenResult[KrakenProduct]]).send()
+    response.map(x => collapseEithers(x.body).map(_.result))
   }
 
   private def collapseEithers[A,B](e : Either[String, Either[A, B]]): Either[String, B] = {
     e.map(_.left.map(_.toString)).joinRight
   }
+
+  private def objToArray(json: Json): Json = {
+    json.withObject { obj =>
+      val arr = obj.toMap.map { case (k, v) => v.mapObject(_.add("id", k.asJson)) }
+      Json.fromValues(arr)
+    }
+  }
+
+  private def arrayToFirst(json: Json): Json = {
+    json.withArray(_.headOption.getOrElse(Json.Null))
+  }
+
+  implicit def krakenResultDecoder[A: Decoder]: Decoder[KrakenResult[A]] =
+    deriveDecoder[KrakenResult[A]]
+      .prepare(_.downField("result").withFocus(objToArray).up)
+
+  implicit val tickerDecoder: Decoder[KrakenTicker] =
+    deriveDecoder[KrakenTicker]
+      .prepare(_.downField("a").withFocus(arrayToFirst).up.downField("b").withFocus(arrayToFirst).up)
 }

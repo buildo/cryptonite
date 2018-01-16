@@ -17,16 +17,20 @@ class ProductsService(gdaxGateway: GDAXGateway, krakenGateway: KrakenGateway, po
 
   def read(): Future[Either[ApiError, List[Book]]] = {
     (for {
-      tickers <- EitherT(gdaxGateway.read())
-      amounts <- tickers.traverse(x => EitherT(portfolioService.get(x.product.base.index.code)))
+      gdaxTickers <- EitherT(gdaxGateway.read())
+      krakenTickers <- EitherT(krakenGateway.read())
+      gdaxAmounts <- gdaxTickers.traverse(x => EitherT(portfolioService.get(x.product.base.index.code)))
+      krakenAmounts <- krakenTickers.traverse(x => EitherT(portfolioService.get(x.product.base.index.code)))
     } yield {
-      tickers.zip(amounts).map{case (t,a) => createBook(t,a)}
+      val gdaxBooks = gdaxTickers.zip(gdaxAmounts).map{case (t,a) => createBook(Exchange.GDAX,t,a)}
+      val krakenBooks = krakenTickers.zip(krakenAmounts).map{case (t,a) => createBook(Exchange.Kraken,t,a)}
+      List.concat(gdaxBooks,krakenBooks)
     }).value
   }
 
-  private def createBook(t: Ticker, a: Amount): Book =
+  private def createBook(e: Exchange, t: Ticker, a: Amount): Book =
     Book(
-      exchange = Exchange.GDAX,
+      exchange = e,
       product = t.product,
       bid = t.bid,
       ask = t.ask,
