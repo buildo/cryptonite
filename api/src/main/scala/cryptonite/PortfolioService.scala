@@ -21,11 +21,10 @@ class PortfolioService(repository: PortfolioRepository)(implicit ec: ExecutionCo
   }
 
   def save(amounts: List[Amount]): Future[Either[ApiError, Unit]] = Future {
-    val currenciesSet = CaseEnumSerialization[Currency].values
-    val currenciesSize = currenciesSet.size
-    (amounts.size, amounts.map(_.currency).toSet) match {
-      case (currenciesSize, currenciesSet) => Right(repository.save(amounts))
-      case _ => Left(ApiError.PortfolioMismatchError)
-    }
+    val currencies = CaseEnumSerialization[Currency].values.toList.sortBy(_.index.code)
+    if (currencies.sameElements(amounts.map(_.currency).sortBy(_.index.code)))
+      Right(repository.save(amounts))
+    else
+      Left(ApiError.PortfolioMismatchError)
   }
 }
