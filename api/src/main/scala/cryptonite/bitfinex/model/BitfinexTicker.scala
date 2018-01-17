@@ -1,11 +1,9 @@
 package cryptonite.bitfinex.model
 
 case class BitfinexTicker (
-  trade_id: Int,
-  price: Float,
-  size: Float,
+  symbol: String,
   bid: Float,
+  bidSize: Float,
   ask: Float,
-  volume: Float,
-  time: String
+  askSize: Float
 )
