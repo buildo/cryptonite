@@ -13,8 +13,9 @@ import cats.instances.list._
 import cats.data.EitherT
 
 import cryptonite.model._
-import cryptonite.errors.ApiError
+import cryptonite.model.exchange._
 import cryptonite.gdax.model._
+import cryptonite.errors.ApiError
 
 class GDAXGateway() {
 
