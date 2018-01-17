@@ -35,7 +35,7 @@ class BitfinexGateway(implicit ec: ExecutionContext) {
     val (base, quote) = s.toUpperCase.splitAt(3)
     (BitfinexCurrencies.convertCurrency(base), BitfinexCurrencies.convertCurrency(quote)) match {
       case (Some(baseCurrency), Some(quoteCurrency)) => Some(SupportedProduct(
-        id = "t"+s,
+        id = "t"+s.toUpperCase,
         product = Product(
           base = baseCurrency,
           quote = quoteCurrency

@@ -12,19 +12,23 @@ import cryptonite.model.exchange.Ticker
 import cryptonite.errors.ApiError
 import cryptonite.gdax.GDAXGateway
 import cryptonite.kraken.KrakenGateway
+import cryptonite.bitfinex.BitfinexGateway
 
-class ProductsService(gdaxGateway: GDAXGateway, krakenGateway: KrakenGateway, portfolioService: PortfolioService)(implicit ec: ExecutionContext) {
+class ProductsService(gdaxGateway: GDAXGateway, krakenGateway: KrakenGateway, bitfinexGateway: BitfinexGateway, portfolioService: PortfolioService)(implicit ec: ExecutionContext) {
 
   def read(): Future[Either[ApiError, List[Book]]] = {
     (for {
       gdaxTickers <- EitherT(gdaxGateway.read())
       krakenTickers <- EitherT(krakenGateway.read())
+      bitfinexTickers <- EitherT(bitfinexGateway.read())
       gdaxAmounts <- gdaxTickers.traverse(x => EitherT(portfolioService.get(x.product.base.index.code)))
       krakenAmounts <- krakenTickers.traverse(x => EitherT(portfolioService.get(x.product.base.index.code)))
+      bitfinexAmounts <- bitfinexTickers.traverse(x => EitherT(portfolioService.get(x.product.base.index.code)))
     } yield {
       val gdaxBooks = gdaxTickers.zip(gdaxAmounts).map { case (t, a) => createBook(Exchange.GDAX, t, a) }
       val krakenBooks = krakenTickers.zip(krakenAmounts).map { case (t, a) => createBook(Exchange.Kraken, t, a) }
-      List.concat(gdaxBooks, krakenBooks)
+      val bitfinexBooks = bitfinexTickers.zip(bitfinexAmounts).map { case (t, a) => createBook(Exchange.Bitfinex, t, a) }
+      List.concat(gdaxBooks, krakenBooks, bitfinexBooks)
     }).value
   }
 
