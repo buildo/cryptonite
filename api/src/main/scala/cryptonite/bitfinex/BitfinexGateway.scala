@@ -1,16 +1,15 @@
 package cryptonite.bitfinex
 
-import java.util.concurrent.Executors
 import scala.concurrent.{Future, ExecutionContext}
 
 import com.softwaremill.sttp._
 import com.softwaremill.sttp.circe._
 import com.softwaremill.sttp.akkahttp._
-import io.circe.generic.auto._
-import cats.syntax.traverse._
+import io.circe._
+import io.circe.generic.semiauto.deriveDecoder
 import cats.instances.future._
-import cats.instances.list._
 import cats.data.EitherT
+import io.buildo.enumero.circe._
 
 import cryptonite.model._
 import cryptonite.model.exchange._
@@ -25,17 +24,18 @@ class BitfinexGateway(implicit ec: ExecutionContext) {
     (for {
       products <- EitherT(products())
       supportedProducts <- EitherT.pure[Future, String, List[SupportedProduct]](products.flatMap(supportedProduct))
-      tickers <- supportedProducts.traverse(x => EitherT(ticker(x.id)))
+      bitfinexTickers <- EitherT(tickers(supportedProducts))
     } yield {
-      supportedProducts.zip(tickers).map{case (p,t) => convertTicker(p,t)}
+      supportedProducts.zip(bitfinexTickers).map { case (p, t) => convertTicker(p, t) }
     }).leftMap{x => ApiError.GenericError}.value
 
   }
 
   private def supportedProduct(s: String): Option[SupportedProduct] = {
-    (Currencies.currencyFromString(p.base_currency), Currencies.currencyFromString(p.quote_currency)) match {
+    val (base, quote) = s.toUpperCase.splitAt(3)
+    (BitfinexCurrencies.convertCurrency(base), BitfinexCurrencies.convertCurrency(quote)) match {
       case (Some(baseCurrency), Some(quoteCurrency)) => Some(SupportedProduct(
-        id = p.id,
+        id = "t"+s,
         product = Product(
           base = baseCurrency,
           quote = quoteCurrency
@@ -73,4 +73,11 @@ class BitfinexGateway(implicit ec: ExecutionContext) {
   private def collapseEithers[A,B](e : Either[String, Either[A, B]]): Either[String, B] = {
     e.map(_.left.map(_.toString)).joinRight
   }
+
+  private val tickerResultFields = List("symbol", "bid", "bidSize", "ask", "askSize")
+
+  implicit val tickerDecoder: Decoder[BitfinexTicker] =
+    deriveDecoder[BitfinexTicker]
+      .prepare(_.withFocus(_.withArray(arr => Json.obj(tickerResultFields.zip(arr): _*))))
+
 }
