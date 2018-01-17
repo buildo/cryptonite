@@ -22,9 +22,9 @@ class ProductsService(gdaxGateway: GDAXGateway, krakenGateway: KrakenGateway, po
       gdaxAmounts <- gdaxTickers.traverse(x => EitherT(portfolioService.get(x.product.base.index.code)))
       krakenAmounts <- krakenTickers.traverse(x => EitherT(portfolioService.get(x.product.base.index.code)))
     } yield {
-      val gdaxBooks = gdaxTickers.zip(gdaxAmounts).map{case (t,a) => createBook(Exchange.GDAX,t,a)}
-      val krakenBooks = krakenTickers.zip(krakenAmounts).map{case (t,a) => createBook(Exchange.Kraken,t,a)}
-      List.concat(gdaxBooks,krakenBooks)
+      val gdaxBooks = gdaxTickers.zip(gdaxAmounts).map { case (t, a) => createBook(Exchange.GDAX, t, a) }
+      val krakenBooks = krakenTickers.zip(krakenAmounts).map { case (t, a) => createBook(Exchange.Kraken, t, a) }
+      List.concat(gdaxBooks, krakenBooks)
     }).value
   }
 

@@ -52,9 +52,7 @@ object KrakenCurrencies {
       case KrakenCurrency.ZEUR => Some(Currency.Euro)
       case KrakenCurrency.ZGBP => Some(Currency.Pound)
       case KrakenCurrency.ZUSD => Some(Currency.Dollar)
-      case KrakenCurrency.GNO | KrakenCurrency.KFEE | KrakenCurrency.USDT | KrakenCurrency.XDAO | KrakenCurrency.XMLN |
-        KrakenCurrency.XNMC | KrakenCurrency.XREP | KrakenCurrency.XXDG | KrakenCurrency.XXVN | KrakenCurrency.XZEC |
-        KrakenCurrency.ZCAD | KrakenCurrency.ZJPY | KrakenCurrency.ZKRW => None
+      case _ => None
     }
   }
 }

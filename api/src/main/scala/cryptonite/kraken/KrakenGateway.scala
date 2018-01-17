@@ -29,7 +29,7 @@ class KrakenGateway(implicit ec: ExecutionContext) {
       supportedProducts <- EitherT.pure[Future, String, List[SupportedProduct]](products.flatMap(supportedProduct))
       krakenTickers <- EitherT(tickers(supportedProducts))
     } yield {
-      supportedProducts.zip(krakenTickers).map{case (p,t) => convertTicker(p,t)}
+      supportedProducts.zip(krakenTickers).map { case (p, t) => convertTicker(p, t) }
     }).leftMap{x => ApiError.GenericError}.value
 
   }
