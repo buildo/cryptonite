@@ -21,7 +21,7 @@ class PortfolioService(repository: PortfolioRepository)(implicit ec: ExecutionCo
   }
 
   def save(amounts: List[Amount]): Future[Either[ApiError, Unit]] = Future {
-    val currencies = CaseEnumSerialization[Currency].values.toList.sortBy(_.index.code)
+    val currencies = CaseEnumSerialization[Currency].values.toList.filter(_.index.isCrypto).sortBy(_.index.code)
     if (currencies.sameElements(amounts.map(_.currency).sortBy(_.index.code)))
       Right(repository.save(amounts))
     else
