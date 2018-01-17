@@ -11,6 +11,8 @@ class PortfolioRepository {
 
   def get(code: String): Option[Amount] = portfolio.get(code)
 
+  def save(amounts: List[Amount]): Unit = amounts.foreach { x => portfolio.put(x.currency.index.code, x) }
+
   private def initializePortfolio(): TrieMap[String, Amount] = {
     val portfolio: TrieMap[String, Amount] = new TrieMap()
     val currencies: Set[Amount] = CaseEnumSerialization[Currency].values.map(new Amount(0.0F,_))

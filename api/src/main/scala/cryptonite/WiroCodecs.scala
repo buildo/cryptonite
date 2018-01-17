@@ -22,6 +22,10 @@ trait WiroCodecs {
         status = StatusCodes.InternalServerError,
         entity = error
       )
+      case ApiError.PortfolioMismatchError => HttpResponse(
+        status = StatusCodes.BadRequest,
+        entity = error
+      )
     }
 
   private implicit def entityToJson[E](entity: E)(implicit encoder: Encoder[E]): HttpEntity.Strict = HttpEntity(

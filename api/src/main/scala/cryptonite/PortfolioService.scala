@@ -2,7 +2,9 @@ package cryptonite
 
 import scala.concurrent.{Future, ExecutionContext}
 
-import cryptonite.model.Amount
+import io.buildo.enumero.CaseEnumSerialization
+
+import cryptonite.model.{ Amount, Currency }
 import cryptonite.errors.ApiError
 
 class PortfolioService(repository: PortfolioRepository)(implicit ec: ExecutionContext) {
@@ -16,5 +18,13 @@ class PortfolioService(repository: PortfolioRepository)(implicit ec: ExecutionCo
       case Some(amount) => Right(amount)
       case None => Left(ApiError.CurrencyNotFoundError)
     }
+  }
+
+  def save(amounts: List[Amount]): Future[Either[ApiError, Unit]] = Future {
+    val currencies = CaseEnumSerialization[Currency].values.toList.filter(_.index.isCrypto).sortBy(_.index.code)
+    if (currencies.sameElements(amounts.map(_.currency).sortBy(_.index.code)))
+      Right(repository.save(amounts))
+    else
+      Left(ApiError.PortfolioMismatchError)
   }
 }
