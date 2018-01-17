@@ -14,7 +14,14 @@ import cryptonite.gdax.GDAXGateway
 import cryptonite.kraken.KrakenGateway
 import cryptonite.bitfinex.BitfinexGateway
 
-class ProductsService(gdaxGateway: GDAXGateway, krakenGateway: KrakenGateway, bitfinexGateway: BitfinexGateway, portfolioService: PortfolioService)(implicit ec: ExecutionContext) {
+class ProductsService(
+  gdaxGateway: GDAXGateway,
+  krakenGateway: KrakenGateway,
+  bitfinexGateway: BitfinexGateway,
+  portfolioService: PortfolioService
+)(implicit
+  ec: ExecutionContext
+) {
 
   def read(): Future[Either[ApiError, List[Book]]] = {
     (for {
