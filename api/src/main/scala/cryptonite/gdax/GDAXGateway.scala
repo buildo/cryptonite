@@ -30,7 +30,7 @@ class GDAXGateway() {
       gdaxTickers <- supportedProducts.traverse(x => EitherT(ticker(x.id)))
     } yield {
       supportedProducts.zip(gdaxTickers).map{case (p,t) => convertTicker(p,t)}
-    }).leftMap{x => ApiError.GenericError}.value
+    }).leftMap{x => ApiError.GDAXError}.value
 
   }
 

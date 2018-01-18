@@ -18,6 +18,22 @@ trait WiroCodecs {
         status = StatusCodes.InternalServerError,
         entity = error
       )
+      case ApiError.GDAXError => HttpResponse(
+        status = StatusCodes.InternalServerError,
+        entity = error
+      )
+      case ApiError.KrakenError => HttpResponse(
+        status = StatusCodes.InternalServerError,
+        entity = error
+      )
+      case ApiError.BitfinexError => HttpResponse(
+        status = StatusCodes.InternalServerError,
+        entity = error
+      )
+      case ApiError.BitstampError => HttpResponse(
+        status = StatusCodes.InternalServerError,
+        entity = error
+      )
       case ApiError.CurrencyNotFoundError => HttpResponse(
         status = StatusCodes.InternalServerError,
         entity = error

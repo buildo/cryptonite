@@ -27,7 +27,7 @@ class BitfinexGateway(implicit ec: ExecutionContext) {
       bitfinexTickers <- EitherT(tickers(supportedProducts))
     } yield {
       supportedProducts.zip(bitfinexTickers).map { case (p, t) => convertTicker(p, t) }
-    }).leftMap{x => ApiError.GenericError}.value
+    }).leftMap{x => ApiError.BitfinexError}.value
 
   }
 

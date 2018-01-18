@@ -12,6 +12,7 @@ import io.buildo.enumero.circe._
 import cryptonite.gdax.GDAXGateway
 import cryptonite.kraken.KrakenGateway
 import cryptonite.bitfinex.BitfinexGateway
+import cryptonite.bitstamp.BitstampGateway
 
 object Boot extends App with WiroCodecs with RouterDerivationModule {
   implicit val system = ActorSystem("cryptonite")
@@ -25,7 +26,8 @@ object Boot extends App with WiroCodecs with RouterDerivationModule {
   val gdaxGateway = new GDAXGateway()
   val krakenGateway = new KrakenGateway()
   val bitfinexGateway = new BitfinexGateway()
-  val productsService = new ProductsService(gdaxGateway, krakenGateway, bitfinexGateway, portfolioService)
+  val bitstampGateway = new BitstampGateway()
+  val productsService = new ProductsService(gdaxGateway, krakenGateway, bitfinexGateway, bitstampGateway, portfolioService)
   val productsRouter = deriveRouter[ProductsController](new ProductsControllerImpl(productsService))
 
   val conf = ConfigFactory.load()
