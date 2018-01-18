@@ -40,7 +40,7 @@ class ProductsService(
       val krakenBooks = krakenTickers.zip(krakenAmounts).map { case (t, a) => createBook(Exchange.Kraken, t, a) }
       val bitfinexBooks = bitfinexTickers.zip(bitfinexAmounts).map { case (t, a) => createBook(Exchange.Bitfinex, t, a) }
       val bitstampBooks = bitstampTickers.zip(bitstampAmounts).map { case (t, a) => createBook(Exchange.Bitstamp, t, a) }
-      List.concat(krakenBooks, bitfinexBooks, bitstampBooks)
+      List.concat(gdaxBooks, krakenBooks, bitfinexBooks, bitstampBooks)
     }).value
   }
 
