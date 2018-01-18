@@ -10,7 +10,6 @@ type MapProps = {
 
 export default container(Products)({
   queries: ['getProducts'],
-  isReady: () => true,
   mapProps: ({ getProducts = []} : MapProps) => ({
     books: getProducts
   })

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Book, Product, Amount, Currency } from 'model';
 import { Tablo, Column, Cell, Header } from 'Basic/Tablo';
+import { LoadingSpinner } from 'Basic';
 
 const currencyMap: { [k in Currency]: string } = {
   Bitcoin: 'BTC',
@@ -34,7 +35,7 @@ type Props = {
 export default class Products extends React.PureComponent<Props> {
   render() {
     const data = this.props.books;
-    return (
+    return data ? (
       <Tablo
        data={data}
       >
@@ -63,6 +64,6 @@ export default class Products extends React.PureComponent<Props> {
           <Cell>{ (amount: Amount) => `${amount.value} ${currencyMap[amount.currency]}`}</Cell>
         </Column>
       </Tablo>
-    )
+    ) : <LoadingSpinner />
   }
 }
