@@ -29,7 +29,7 @@ class ProductsControllerImpl(service: ProductsService) extends ProductsControlle
     sortBy: Column,
     ascending: Boolean
   ): Future[Either[ApiError, List[Book]]] = {
-    service.read(exchanges, base, quote)
+    service.read(exchanges, base, quote, sortBy, ascending)
   }
 }
 

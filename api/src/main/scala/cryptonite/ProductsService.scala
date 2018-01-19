@@ -16,7 +16,9 @@ class ProductsService(gateways: List[Gateway], portfolioService: PortfolioServic
   def read(
     exchanges: List[Exchange],
     base: Option[Currency],
-    quote: Option[Currency]
+    quote: Option[Currency],
+    sortBy: Column,
+    ascending: Boolean
   ): Future[Either[ApiError, List[Book]]] = {
 
     val filteredGateways = gateways.filter(g => exchanges.contains(g.exchange()))
@@ -24,7 +26,9 @@ class ProductsService(gateways: List[Gateway], portfolioService: PortfolioServic
       booksByGateway <- filteredGateways.traverse(g => EitherT(getBooks(g)))
     } yield {
       val books = booksByGateway.flatten
-      books.filter(b => acceptBase(b,base)).filter(b => acceptQuote(b,quote))
+      val filteredBooks = books.filter(b => acceptBase(b,base)).filter(b => acceptQuote(b,quote))
+      val sortedBooks = sortBooks(filteredBooks, sortBy)
+      order(sortedBooks, ascending)
     }).value
 
   }
@@ -51,6 +55,23 @@ class ProductsService(gateways: List[Gateway], portfolioService: PortfolioServic
       case Some(currency) => if (book.product.quote == currency) true else false
       case None => true
     }
+  }
+
+  def sortBooks(books: List[Book], sortBy: Column): List[Book] = {
+    sortBy match {
+      case Column.Exchange => books.sortBy(x => Exchange.caseToString(x.exchange))
+      case Column.Product => books.sortBy(_.product.base.index.code)
+      case Column.Bid => books.sortBy(_.bid.value)
+      case Column.Ask => books.sortBy(_.ask.value)
+      case Column.Value => books.sortBy(_.value.value)
+    }
+  }
+
+  def order(books: List[Book], ascending: Boolean): List[Book] = {
+    if (!ascending)
+      books.reverse
+    else
+      books
   }
 
   private def createBook(e: Exchange, t: Ticker, a: Amount): Book =
