@@ -17,13 +17,13 @@ import cryptonite.model.exchange._
 import cryptonite.gdax.model._
 import cryptonite.errors.ApiError
 
-class GDAXGateway() {
+class GDAXGateway() extends Gateway {
 
   implicit val ec: ExecutionContext = ExecutionContext.fromExecutorService(Executors.newSingleThreadExecutor())
 
   implicit val sttpBackend = AkkaHttpBackend()
 
-  def read(): Future[Either[ApiError, List[Ticker]]] = {
+  override def read(): Future[Either[ApiError, List[Ticker]]] = {
     (for {
       products <- EitherT(products())
       supportedProducts <- EitherT.pure[Future, String, List[SupportedProduct]](products.flatMap(supportedProduct))
@@ -31,8 +31,9 @@ class GDAXGateway() {
     } yield {
       supportedProducts.zip(gdaxTickers).map{case (p,t) => convertTicker(p,t)}
     }).leftMap{x => ApiError.GDAXError}.value
-
   }
+
+  override def exchange(): Exchange = Exchange.GDAX
 
   private def supportedProduct(p: GDAXProduct): Option[SupportedProduct] = {
     (Currencies.currencyFromString(p.base_currency), Currencies.currencyFromString(p.quote_currency)) match {

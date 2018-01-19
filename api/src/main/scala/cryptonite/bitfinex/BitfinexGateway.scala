@@ -16,11 +16,11 @@ import cryptonite.model.exchange._
 import cryptonite.bitfinex.model._
 import cryptonite.errors.ApiError
 
-class BitfinexGateway(implicit ec: ExecutionContext) {
+class BitfinexGateway(implicit ec: ExecutionContext) extends Gateway {
 
   implicit val sttpBackend = AkkaHttpBackend()
 
-  def read(): Future[Either[ApiError, List[Ticker]]] = {
+  override def read(): Future[Either[ApiError, List[Ticker]]] = {
     (for {
       products <- EitherT(products())
       supportedProducts <- EitherT.pure[Future, String, List[SupportedProduct]](products.flatMap(supportedProduct))
@@ -28,8 +28,9 @@ class BitfinexGateway(implicit ec: ExecutionContext) {
     } yield {
       supportedProducts.zip(bitfinexTickers).map { case (p, t) => convertTicker(p, t) }
     }).leftMap{x => ApiError.BitfinexError}.value
-
   }
+
+  override def exchange(): Exchange = Exchange.Bitfinex
 
   private def supportedProduct(s: String): Option[SupportedProduct] = {
     val (base, quote) = s.toUpperCase.splitAt(3)

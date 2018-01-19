@@ -27,7 +27,7 @@ object Boot extends App with WiroCodecs with RouterDerivationModule {
   val krakenGateway = new KrakenGateway()
   val bitfinexGateway = new BitfinexGateway()
   val bitstampGateway = new BitstampGateway()
-  val productsService = new ProductsService(gdaxGateway, krakenGateway, bitfinexGateway, bitstampGateway, portfolioService)
+  val productsService = new ProductsService(List(gdaxGateway, krakenGateway, bitfinexGateway, bitstampGateway), portfolioService)
   val productsRouter = deriveRouter[ProductsController](new ProductsControllerImpl(productsService))
 
   val conf = ConfigFactory.load()

@@ -18,11 +18,11 @@ import cryptonite.bitstamp.model._
 import cryptonite.errors.ApiError
 
 
-class BitstampGateway(implicit ec: ExecutionContext) {
+class BitstampGateway(implicit ec: ExecutionContext) extends Gateway {
 
   implicit val sttpBackend = AkkaHttpBackend()
 
-  def read(): Future[Either[ApiError, List[Ticker]]] = {
+  override def read(): Future[Either[ApiError, List[Ticker]]] = {
     (for {
       products <- EitherT(products())
       supportedProducts <- EitherT.pure[Future, String, List[SupportedProduct]](products.flatMap(supportedProduct))
@@ -30,8 +30,9 @@ class BitstampGateway(implicit ec: ExecutionContext) {
     } yield {
       supportedProducts.zip(bitstampTickers).map { case (p, t) => convertTicker(p, t) }
     }).leftMap{x => ApiError.BitstampError}.value
-
   }
+
+  override def exchange(): Exchange = Exchange.Bitstamp
 
   private def supportedProduct(p: BitstampProduct): Option[SupportedProduct] = {
     val currencies = p.name.split("/")
