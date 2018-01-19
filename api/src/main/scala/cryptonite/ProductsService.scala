@@ -44,10 +44,10 @@ class ProductsService(gateways: List[Gateway], portfolioService: PortfolioServic
     }).value
 
   def acceptBase(book: Book, base: Option[Currency]): Boolean =
-    base.forall{ b => if (book.product.base == b) true else false }
+    base.forall(_ == book.product.base)
 
   def acceptQuote(book: Book, quote: Option[Currency]): Boolean =
-    quote.forall{ q => if (book.product.quote == q) true else false }
+    quote.forall(_ == book.product.quote)
 
   def sortBooks(books: List[Book], sortBy: Column): List[Book] =
     sortBy match {
