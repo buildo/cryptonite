@@ -19,11 +19,11 @@ import cryptonite.kraken.model._
 import cryptonite.errors.ApiError
 
 
-class KrakenGateway(implicit ec: ExecutionContext) {
+class KrakenGateway(implicit ec: ExecutionContext) extends Gateway{
 
   implicit val sttpBackend = AkkaHttpBackend()
 
-  def read(): Future[Either[ApiError, List[Ticker]]] = {
+  override def read(): Future[Either[ApiError, List[Ticker]]] = {
     (for {
       products <- EitherT(products())
       supportedProducts <- EitherT.pure[Future, String, List[SupportedProduct]](products.flatMap(supportedProduct))
@@ -33,6 +33,8 @@ class KrakenGateway(implicit ec: ExecutionContext) {
     }).leftMap{x => ApiError.KrakenError}.value
 
   }
+
+  override def exchange(): Exchange = Exchange.Kraken
 
   private def supportedProduct(p: KrakenProduct): Option[SupportedProduct] = {
     (KrakenCurrencies.convertCurrency(p.base), KrakenCurrencies.convertCurrency(p.quote)) match {
