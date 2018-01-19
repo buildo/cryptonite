@@ -62,7 +62,7 @@ class KrakenGateway(implicit ec: ExecutionContext) extends Gateway{
   )
 
   private def tickers(products: List[SupportedProduct]): Future[Either[String, List[KrakenTicker]]] = {
-    val productIds = products.map(_.id).filterNot(_.endsWith(".d")).mkString(",")
+    val productIds = products.map(_.id).mkString(",")
     val request = sttp.get(uri"https://api.kraken.com/0/public/Ticker?pair=$productIds")
     val response = request.response(asJson[KrakenResult[KrakenTicker]]).send()
     response.map(x => collapseEithers(x.body).map(_.result))
