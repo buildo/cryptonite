@@ -26,38 +26,30 @@ class ProductsService(gateways: List[Gateway], portfolioService: PortfolioServic
       booksByGateway <- filteredGateways.traverse(g => EitherT(getBooks(g)))
     } yield {
       val books = booksByGateway.flatten
-      val filteredBooks = books.filter(b => acceptBase(b,base)).filter(b => acceptQuote(b,quote))
+      val filteredBooks = books
+        .filter(b => acceptBase(b,base))
+        .filter(b => acceptQuote(b,quote))
       val sortedBooks = sortBooks(filteredBooks, sortBy)
       order(sortedBooks, ascending)
     }).value
 
   }
 
-  def getBooks(gateway: Gateway): Future[Either[ApiError, List[Book]]] = {
+  def getBooks(gateway: Gateway): Future[Either[ApiError, List[Book]]] =
     (for {
       tickers <- EitherT(gateway.read())
       amounts <- tickers.traverse(t => EitherT(portfolioService.get(t.product.base.index.code)))
     } yield {
-      val books = tickers.zip(amounts).map { case (t, a) => createBook(gateway.exchange(), t, a) }
-      books
+      tickers.zip(amounts).map { case (t, a) => createBook(gateway.exchange(), t, a) }
     }).value
-  }
 
-  def acceptBase(book: Book, base: Option[Currency]): Boolean = {
-    base match {
-      case Some(currency) => if (book.product.base == currency) true else false
-      case None => true
-    }
-  }
+  def acceptBase(book: Book, base: Option[Currency]): Boolean =
+    base.forall{ b => if (book.product.base == b) true else false }
 
-  def acceptQuote(book: Book, quote: Option[Currency]): Boolean = {
-    quote match {
-      case Some(currency) => if (book.product.quote == currency) true else false
-      case None => true
-    }
-  }
+  def acceptQuote(book: Book, quote: Option[Currency]): Boolean =
+    quote.forall{ q => if (book.product.quote == q) true else false }
 
-  def sortBooks(books: List[Book], sortBy: Column): List[Book] = {
+  def sortBooks(books: List[Book], sortBy: Column): List[Book] =
     sortBy match {
       case Column.Exchange => books.sortBy(x => Exchange.caseToString(x.exchange))
       case Column.Product => books.sortBy(_.product.base.index.code)
@@ -65,14 +57,12 @@ class ProductsService(gateways: List[Gateway], portfolioService: PortfolioServic
       case Column.Ask => books.sortBy(_.ask.value)
       case Column.Value => books.sortBy(_.value.value)
     }
-  }
 
-  def order(books: List[Book], ascending: Boolean): List[Book] = {
+  def order(books: List[Book], ascending: Boolean): List[Book] =
     if (!ascending)
       books.reverse
     else
       books
-  }
 
   private def createBook(e: Exchange, t: Ticker, a: Amount): Book =
     Book(
