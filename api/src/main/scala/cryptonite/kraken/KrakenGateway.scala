@@ -38,7 +38,7 @@ class KrakenGateway(implicit ec: ExecutionContext) extends Gateway{
 
   private def supportedProduct(p: KrakenProduct): Option[SupportedProduct] = {
     (KrakenCurrencies.convertCurrency(p.base), KrakenCurrencies.convertCurrency(p.quote)) match {
-      case (Some(baseCurrency), Some(quoteCurrency)) => Some(SupportedProduct(
+      case (Some(baseCurrency), Some(quoteCurrency)) if !p.id.endsWith(".d") => Some(SupportedProduct(
         id = p.id,
         product = Product(
           base = baseCurrency,
@@ -62,7 +62,7 @@ class KrakenGateway(implicit ec: ExecutionContext) extends Gateway{
   )
 
   private def tickers(products: List[SupportedProduct]): Future[Either[String, List[KrakenTicker]]] = {
-    val productIds = products.map(_.id).mkString(",")
+    val productIds = products.map(_.id).filterNot(_.endsWith(".d")).mkString(",")
     val request = sttp.get(uri"https://api.kraken.com/0/public/Ticker?pair=$productIds")
     val response = request.response(asJson[KrakenResult[KrakenTicker]]).send()
     response.map(x => collapseEithers(x.body).map(_.result))
