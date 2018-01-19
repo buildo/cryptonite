@@ -13,14 +13,14 @@ import io.buildo.enumero.annotations.indexedEnum
   object Cardano { CurrencyInfo("ADA", true) }
   object NEM { CurrencyInfo("XEM", true) }
   object Stellar { CurrencyInfo("XLM", true) }
-  object IOTA { CurrencyInfo("IOTA", true) }
+  object IOTA { CurrencyInfo("IOT", true) }
   object TRON { CurrencyInfo("TRX", true) }
-  object Dash { CurrencyInfo("DASH", true) }
+  object Dash { CurrencyInfo("DSH", true) }
   object NEO { CurrencyInfo("NEO", true) }
   object Monero { CurrencyInfo("XMR", true) }
   object EOS { CurrencyInfo("EOS", true) }
   object ICON { CurrencyInfo("ICX", true) }
-  object Qtum { CurrencyInfo("QTUM", true) }
+  object Qtum { CurrencyInfo("QTM", true) }
   object BitcoinGold { CurrencyInfo("BTG", true) }
   object Lisk { CurrencyInfo("LSK", true) }
   object RaiBlocks { CurrencyInfo ("XRB", true) }
