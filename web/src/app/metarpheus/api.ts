@@ -42,12 +42,37 @@ export default function getRoutes(config: RouteConfig) {
       }).then(res => unsafeValidate(config.unwrapApiResponse(res.data), t.array(m.Amount))) as any
     },
 
-    productsController_read: function ({  }: {  }): Promise<Array<m.Book>> {
+    portfolioController_save: function ({ amounts }: { amounts: Array<m.Amount> }): Promise<m.Unit> {
+      return axios({
+        method: 'post',
+        url: `${config.apiEndpoint}/portfolio/save`,
+        params: {
+
+        },
+        data: {
+          amounts
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        timeout: config.timeout
+      }).then(res => unsafeValidate(config.unwrapApiResponse(res.data), m.Unit)) as any
+    },
+
+    productsController_read: function ({ exchanges, base, quote, sortBy, ascending }: { exchanges: Array<m.Exchange>, base: 
+  | m.Currency
+  | undefined, quote: 
+  | m.Currency
+  | undefined, sortBy: m.Column, ascending: boolean }): Promise<Array<m.Book>> {
       return axios({
         method: 'get',
         url: `${config.apiEndpoint}/products/read`,
         params: {
-
+          exchanges,
+          base,
+          quote,
+          sortBy,
+          ascending
         },
         data: {
 

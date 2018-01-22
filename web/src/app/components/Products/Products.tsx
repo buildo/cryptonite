@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Book, Product, Amount, Currency } from 'model';
+import { Book, Product, Amount, Currency, Column as ColumnType } from 'model';
 import { Tablo, Column, Cell, Header } from 'Basic/Tablo';
 import { LoadingSpinner } from 'Basic';
 
@@ -29,15 +29,45 @@ const currencyMap: { [k in Currency]: string } = {
   Pound: 'GBP'
 }
 
+const columnsToSortByMap: { [k in keyof Book]: ColumnType } = {
+  exchange: 'Exchange',
+  product: 'Product',
+  bid: 'Bid',
+  ask: 'Ask',
+  value: 'Value'
+}
+
+const sortByToColumnsMap: { [k in ColumnType]: keyof Book } = {
+  Exchange: 'exchange',
+  Product: 'product',
+  Bid: 'bid',
+  Ask: 'ask',
+  Value: 'value'
+}
+
+type SortBy = ColumnType;
+type SortDir  = 'asc'| 'desc';
+
 type Props = {
-  books: Array<Book>
+  books: Array<Book>,
+  sortBy: SortBy,
+  sortDir: SortDir,
+  onSortChange: (sort: { sortBy: SortBy, sortDir: SortDir }) => void
 };
 export default class Products extends React.PureComponent<Props> {
+
+  onSortChange = (x: {sortBy: keyof Book, sortDir: SortDir}) => {
+    this.props.onSortChange( { sortBy: columnsToSortByMap[x.sortBy], sortDir: x.sortDir })
+  }
+
   render() {
-    const data = this.props.books;
+    const { sortBy, sortDir, books: data } = this.props;
     return data ? (
       <Tablo
        data={data}
+       sortBy={sortByToColumnsMap[sortBy]}
+       sortDir={sortDir}
+       onSortChange={this.onSortChange}
       >
         <Column name='exchange' width={200}>
           <Header>Exchange</Header>
