@@ -1,4 +1,6 @@
 import * as t from 'io-ts'
+export interface Unit {}
+export const Unit = t.interface({}, 'Unit');
 export type Currency = 
   | 'Bitcoin'
   | 'BitcoinCash'
@@ -98,3 +100,18 @@ export const Book = t.interface({
   ask: Amount,
   value: Amount
 }, 'Book')
+
+export type Column = 
+  | 'Exchange'
+  | 'Product'
+  | 'Bid'
+  | 'Ask'
+  | 'Value'
+
+export const Column = t.keyof({
+  Exchange: true,
+  Product: true,
+  Bid: true,
+  Ask: true,
+  Value: true
+}, 'Column')
