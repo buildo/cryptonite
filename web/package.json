@@ -1,7 +1,7 @@
 {
-  "name": "webseed",
+  "name": "cryptonite",
   "version": "0.2.0",
-  "description": "webseed",
+  "description": "cryptonite",
   "main": "src/client/index.js",
   "scripts": {
     "start": "UV_THREADPOOL_SIZE=20 scriptoni web-dev-ts -c ./config",
@@ -22,6 +22,7 @@
     "debug": "^2.6.0",
     "es6-promise": "^4.0.5",
     "lodash": "^4.17.4",
+    "lodash.omit": "^4.5.0",
     "react": "^15.6.1",
     "react-addons-perf": "15.4.2",
     "react-avenger": "^4.0.0",
@@ -29,12 +30,12 @@
     "react-flexview": "^1.0.13",
     "react-intl": "^2.2.3",
     "react-skinnable": "^1.1.1",
-    "tcomb": "^3.2.16",
+    "tcomb": "^3.2.24",
     "tcomb-react": "^0.9.3"
   },
   "devDependencies": {
     "@types/node": "^8.0.24",
     "@types/react": "15.6.1",
-    "scriptoni": "0.7.9"
+    "scriptoni": "^0.7.9"
   }
 }
