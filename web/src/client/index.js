@@ -36,7 +36,7 @@ function loadLocaleMessages(locale) {
   });
 }
 
-const serializeExclude = ['locale', 'token'];
+const serializeExclude = ['locale', 'token', 'exchanges'];
 
 const shouldSerializeKey = k => !isLocalKey(k) && serializeExclude.indexOf(k) === -1;
 export const main = baseIndex({
