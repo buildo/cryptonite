@@ -63,13 +63,11 @@ export const Amount = t.interface({
 }, 'Amount')
 
 export type Exchange = 
-  | 'GDAX'
   | 'Kraken'
   | 'Bitfinex'
   | 'Bitstamp'
 
 export const Exchange = t.keyof({
-  GDAX: true,
   Kraken: true,
   Bitfinex: true,
   Bitstamp: true

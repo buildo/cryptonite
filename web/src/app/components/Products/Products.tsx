@@ -46,7 +46,6 @@ const sortByToColumnsMap: { [k in ColumnType]: keyof Book } = {
 }
 
 const exchangesMap: { [k in Exchange]: { value: Exchange, label: string } } = {
-  GDAX: { value: 'GDAX', label: 'GDAX' },
   Kraken: { value: 'Kraken', label: 'Kraken' },
   Bitfinex: { value: 'Bitfinex', label: 'Bitfinex' },
   Bitstamp: { value: 'Bitstamp', label: 'Bitstamp' }
