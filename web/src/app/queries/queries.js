@@ -3,6 +3,13 @@ import { Expire } from 'avenger/lib/cache/strategies';
 import t from 'tcomb';
 import API from 'API';
 
+const defaultExchanges = ['Bitfinex', 'Bitstamp', 'Kraken'];
+
+const checkExchanges =
+  (exchanges) =>
+  (exchanges.length === 1 && exchanges[0] === '') ?
+  JSON.stringify(defaultExchanges) : JSON.stringify(exchanges);
+
 export const getProducts = Query({
   id: 'getProducts',
   params: {
@@ -15,14 +22,14 @@ export const getProducts = Query({
   cacheStrategy: new Expire(15000),
   returnType: t.Any,
   fetch: ({
-    exchanges = ['Bitfinex', 'Bitstamp', 'Kraken'],
+    exchanges = defaultExchanges,
     base = undefined,
     quote = undefined,
     sortBy = 'Exchange',
     ascending = true
   }) => {
     return API.productsController_read({
-      exchanges: JSON.stringify(exchanges), // doing this to prevent wrong serialization
+      exchanges: checkExchanges(exchanges), // doing this to prevent wrong serialization
       base,
       quote,
       sortBy,
@@ -30,4 +37,3 @@ export const getProducts = Query({
     });
   }
 });
-

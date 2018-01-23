@@ -102,11 +102,7 @@ export default class Products extends React.PureComponent<Props> {
   onExchangeChange = (value: string) => this.props.onExchangeChange(value.split(",") as Array<Exchange>)
 
   render() {
-    const {
-      exchanges,
-      base, quote, sortBy, sortDir, books: data } = this.props;
-    exchangesMap
-    console.log(exchanges)
+    const { exchanges, base, quote, sortBy, sortDir, books: data } = this.props;
     return data ? (
       <FlexView column grow>
         <FlexView hAlignContent='center'>

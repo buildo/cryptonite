@@ -24,7 +24,6 @@ export default container(Products)({
     sortBy,
     sortDir: ascending ? 'asc' : 'desc',
     onExchangeChange: ( exchanges ) => {
-      console.log(exchanges);
       transition({
         exchanges
       })
