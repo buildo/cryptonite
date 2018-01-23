@@ -12,7 +12,7 @@ trait ProductsController {
 
   @query
   def read(
-    exchanges: List[Exchange] = Exchange.values.toList,
+    exchanges: List[Exchange] = List(Exchange.Kraken,Exchange.Bitfinex,Exchange.Bitstamp),
     base: Option[Currency] = None,
     quote: Option[Currency] = None,
     sortBy: Column = Column.Exchange,
