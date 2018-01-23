@@ -1,6 +1,7 @@
 package cryptonite.bitfinex
 
 import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.duration._
 
 import com.softwaremill.sttp._
 import com.softwaremill.sttp.circe._
@@ -10,6 +11,10 @@ import io.circe.generic.semiauto.deriveDecoder
 import cats.instances.future._
 import cats.data.EitherT
 import io.buildo.enumero.circe._
+import scalacache._
+import scalacache.caffeine._
+import scalacache.memoization._
+import scalacache.modes.scalaFuture._
 
 import cryptonite.model._
 import cryptonite.model.exchange._
@@ -20,7 +25,9 @@ class BitfinexGateway(implicit ec: ExecutionContext) extends Gateway {
 
   implicit val sttpBackend = AkkaHttpBackend()
 
-  override def read(): Future[Either[ApiError, List[Ticker]]] = {
+  implicit val caffeineCache: Cache[Either[ApiError.BitfinexError.type, List[Ticker]]] = CaffeineCache[Either[ApiError.BitfinexError.type, List[Ticker]]]
+
+  override def read(): Future[Either[ApiError, List[Ticker]]] = memoizeF(Some(120.seconds)) {
     (for {
       products <- EitherT(products())
       supportedProducts <- EitherT.pure[Future, String, List[SupportedProduct]](products.flatMap(supportedProduct))
