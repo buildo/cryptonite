@@ -2,6 +2,7 @@ package cryptonite.gdax
 
 import java.util.concurrent.Executors
 import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.duration._
 
 import com.softwaremill.sttp._
 import com.softwaremill.sttp.circe._
@@ -11,6 +12,10 @@ import cats.syntax.traverse._
 import cats.instances.future._
 import cats.instances.list._
 import cats.data.EitherT
+import scalacache._
+import scalacache.caffeine._
+import scalacache.memoization._
+import scalacache.modes.scalaFuture._
 
 import cryptonite.model._
 import cryptonite.model.exchange._
@@ -23,7 +28,9 @@ class GDAXGateway() extends Gateway {
 
   implicit val sttpBackend = AkkaHttpBackend()
 
-  override def read(): Future[Either[ApiError, List[Ticker]]] = {
+  implicit val caffeineCache: Cache[Either[ApiError.GDAXError.type, List[Ticker]]] = CaffeineCache[Either[ApiError.GDAXError.type, List[Ticker]]]
+
+  override def read(): Future[Either[ApiError, List[Ticker]]] = memoizeF(Some(1200.seconds)) {
     (for {
       products <- EitherT(products())
       supportedProducts <- EitherT.pure[Future, String, List[SupportedProduct]](products.flatMap(supportedProduct))

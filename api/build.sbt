@@ -16,6 +16,7 @@ lazy val sttpCirce = "com.softwaremill.sttp" %% "circe" % sttpVersion
 lazy val sttpAkka = "com.softwaremill.sttp" %% "akka-http-backend" % sttpVersion
 lazy val catsCore = "org.typelevel" %% "cats-core" % "0.9.0"
 lazy val logback = "ch.qos.logback" % "logback-classic" % "1.2.3"
+lazy val scalaCache = "com.github.cb372" %% "scalacache-caffeine" % "0.22.0"
 lazy val root = project.in(file("."))
   .settings(
     name := "cryptonite",
@@ -36,7 +37,8 @@ lazy val root = project.in(file("."))
       sttpCirce,
       sttpAkka,
       catsCore,
-      logback
+      logback,
+      scalaCache
     ),
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
   )
