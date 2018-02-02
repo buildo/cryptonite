@@ -3,6 +3,8 @@ services:
   web:
     image: quay.io/buildo/cryptonite:web-latest
     ports:
-     - "80:8080"
+     - "8080:80"
   api:
     image: quay.io/buildo/cryptonite:api-latest
+    environment:
+      - CRYPTONITE_HOST=0.0.0.0
