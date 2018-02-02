@@ -1,0 +1,8 @@
+version: '3'
+services:
+  web:
+    image: quay.io/buildo/cryptonite:web-latest
+    ports:
+     - "80:8080"
+  api:
+    image: quay.io/buildo/cryptonite:api-latest

@@ -1,7 +1,7 @@
 import getRoutes from 'metarpheus/api';
 
 export default getRoutes({
-  apiEndpoint: 'http://localhost:1337/localhost:9090',
+  apiEndpoint: '/api',
   timeout: 120000,
   unwrapApiResponse: (resp: any) => resp
 });
